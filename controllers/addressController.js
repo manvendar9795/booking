@@ -99,6 +99,9 @@ exports.getAddressById = async (req, res) => {
     }
 };
 
+
+// new apis
+
 exports.deleteAddress = async (req, res) => {
     try {
       const addressId = req.params.id;
