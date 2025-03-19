@@ -42,10 +42,6 @@ exports.createUser = async (req, res) => {
     return res.status(400).json(resp.sendError(null, error.message));
   }
 };
-
-
-
-
 exports.getAllUser = async (req, res) => {
   try {
     let userList = await UserModel.findAll({ where: { is_delete: "false" } });
