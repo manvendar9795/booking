@@ -49,21 +49,37 @@ module.exports = {
     };
   },
 
-async check_unique_email(email, user_id) {
+  async check_unique_email(email, user_id) {
     const user = await UserModel.findOne({ where: { email } });
-  
+
     // If no user is found, the email is unique
     if (!user) {
       return { result: true };
     }
-  
+
     // If the found user's ID matches the given user_id, it's the same user (valid)
     if (user.id === user_id) {
       return { result: true };
     }
-  
+
     // Otherwise, the email is already taken by another user
     return { result: false };
   },
 
+  async check_unique_mobile(mobile, user_id) {
+    const user = await UserModel.findOne({ where: { mobile } });
+
+    // If no user is found, the email is unique
+    if (!user) {
+      return { result: true };
+    }
+
+    // If the found user's ID matches the given user_id, it's the same user (valid)
+    if (user.id === user_id) {
+      return { result: true };
+    }
+
+    // Otherwise, the email is already taken by another user
+    return { result: false };
+  },
 };

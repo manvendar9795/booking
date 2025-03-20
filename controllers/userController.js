@@ -23,6 +23,12 @@ exports.createUser = async (req, res) => {
       if (!isUnique.result) {
         return res.status(400).json(resp.sendError(null, "Email already exists"));
       }
+
+      // Check if mobile is unique
+      const isMobileUnique = await resp.check_unique_mobile(req.body.mobile);
+      if (!isMobileUnique.result) {
+        return res.status(400).json(resp.sendError(null, "Mobile Number  already exists"));
+      }
       
       // Hash password
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
