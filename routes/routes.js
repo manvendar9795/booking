@@ -8,21 +8,25 @@ const userController = require("../controllers/userController");
 const bookingcontroller = require('../controllers/bookingController');
 const adresscontroller = require('../controllers/addressController');
 const Leavecontroller = require('../controllers/leavesController');
+const authController = require('../controllers/authContoller');
+const { authmiddleware , isAdmin} = require('../middleware/isAdmin');
 // const handleDatabaseConnection =require('../middleware/dbconnection');
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
-// 
 
-router.post("/createUser",   upload.none(), userController.createUser);
-router.get("/getAllUser",  userController.getAllUser);
+// 
+router.post("/createUser",   upload.none(), authController.createUser);
+router.post("/loginUser",   upload.none(), authController.loginUser);
+// router.post("/createUser",   upload.none(), userController.createUser);
+router.get("/getAllUser", authmiddleware, userController.getAllUser);
 router.get("/getUserById/:id",  userController.getUserById);
 router.delete("/deleteUserById/:id",  userController.deleteUser);
 router.put("/updateUserById/:id",  upload.none(), userController.updateUser);
 
 
-// //**** Booking API ******//
+ //**** Booking API ******//
 
 router.post("/createBooking",  upload.none(), bookingcontroller.createBooking);
 router.get("/getAllBooking",  bookingcontroller.getAllBooking);

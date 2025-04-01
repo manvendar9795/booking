@@ -4,50 +4,10 @@ const validation = require("./validationController");
 const models = require("../models");
 const UserModel = models.User;
 const bcrypt = require('bcrypt');
+const JWT = require('jsonwebtoken');
 
-exports.createUser = async (req, res) => {
-  try {
-    var validationRule = {
-      firstName: "required|string",
-      lastName: "required|string",
-      email: "required|string|email",
-      // "password": "required|string|min:8",
-      user_type: "required|in:doctor,patient",
-    };
-    await validation(req.body, validationRule, null, async (err, status) => {
-      if (!status) {
-        res.status(400).json(resp.sendError(err.errors, "Validation failed"));
-      } 
-      // Check if email is unique
-      const isUnique = await resp.check_unique_email(req.body.email);
-      if (!isUnique.result) {
-        return res.status(400).json(resp.sendError(null, "Email already exists"));
-      }
 
-      // Check if mobile is unique
-      const isMobileUnique = await resp.check_unique_mobile(req.body.mobile);
-      if (!isMobileUnique.result) {
-        return res.status(400).json(resp.sendError(null, "Mobile Number  already exists"));
-      }
-      
-      // Hash password
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      req.body.password = hashedPassword;
 
-        let userData = await UserModel.create(req.body);
-        if (!userData) {
-          return res.status(400).json(resp.sendError(null, "user not create"));
-        }
-        return res.status(200).json(resp.customInfo(userData, "create successfully"));
-      
-    }).catch((err) => {
-      console.log(err);
-      res.status(400).json(resp.sendError(null, err.message));
-    });
-  } catch (error) {
-    return res.status(400).json(resp.sendError(null, error.message));
-  }
-};
 exports.getAllUser = async (req, res) => {
   try {
     let userList = await UserModel.findAll({ where: { is_delete: "false" } });
@@ -99,7 +59,7 @@ exports.deleteUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    // const updateData = req.body; // Data to update
+    // const updateData = req.body; // Data to updateuu
     // // Find user that is not deleted
     let user = await UserModel.findOne({
       where: { id: userId, is_delete: "false" },
@@ -118,4 +78,52 @@ exports.updateUser = async (req, res) => {
     return res.status(400).json(resp.sendError(null, error.message));
   }
 };
-     
+    
+// exports.createUser = async (req, res) => {
+//   try {
+//     var validationRule = {
+//       firstName: "required|string",
+//       lastName: "required|string",
+//       email: "required|string|email",
+//       // "password": "required|string|min:8",
+//       user_type: "required|in:doctor,patient",
+//     };
+//     await validation(req.body, validationRule, null, async (err, status) => {
+//       if (!status) {
+//         res.status(400).json(resp.sendError(err.errors, "Validation failed"));
+//       } 
+//       // Check if email is unique
+//       const isUnique = await resp.check_unique_email(req.body.email);
+//       if (!isUnique.result) {
+//         return res.status(400).json(resp.sendError(null, "Email already exists"));
+//       }
+
+//       // Check if mobile is unique
+//       const isMobileUnique = await resp.check_unique_mobile(req.body.mobile);
+//       if (!isMobileUnique.result) {
+//         return res.status(400).json(resp.sendError(null, "Mobile Number  already exists"));
+//       }
+      
+//       // Hash password
+//       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+//       req.body.password = hashedPassword;
+
+//       // token 
+//       // const token = JWT.sign({id: userData.id},process.env.JWT_SECRET, {
+//       //   expiresIn: "7d",
+//       // })
+
+//         let userData = await UserModel.create(req.body);
+//         if (!userData) {
+//           return res.status(400).json(resp.sendError(null, "user not create"));
+//         }
+//         return res.status(200).json(resp.customInfo({userData}, "create successfully"));
+      
+//     }).catch((err) => {
+//       console.log(err);
+//       res.status(400).json(resp.sendError(null, err.message));
+//     });
+//   } catch (error) {
+//     return res.status(400).json(resp.sendError(null, error.message));
+//   }
+// };
