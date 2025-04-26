@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const upload = multer();
+const upload = require('../middleware/UploadMiddleware')  //multer();
 const group = require("express-group-routes");
 const bodyParser = require('body-parser');
 const router = express.Router();
@@ -20,10 +20,15 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.post("/createUser",   upload.none(), authController.createUser);
 router.post("/loginUser",   upload.none(), authController.loginUser);
 // router.post("/createUser",   upload.none(), userController.createUser);
-router.get("/getAllUser", authmiddleware, userController.getAllUser);
+router.get("/getAllUser",  userController.getAllUser); // authmiddleware,
 router.get("/getUserById/:id",  userController.getUserById);
 router.delete("/deleteUserById/:id",  userController.deleteUser);
 router.put("/updateUserById/:id",  upload.none(), userController.updateUser);
+
+
+    //***** uplode image ******//
+// router.post("/upload-image", upload.single("image"), userController.uploadImage);
+// router.post("/uploadMultipalimage", upload.array("files[]"), userController.uploadMultipalImage);
 
 
  //**** Booking API ******//
